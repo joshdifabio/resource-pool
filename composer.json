@@ -1,0 +1,29 @@
+{
+    "name": "joshdifabio/resource-pool",
+    "description": "Regulate the concurrency level of your async components",
+    "keywords": ["lock", "concurrency", "ReactPHP", "async", "promise"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Josh Di Fabio",
+            "email": "joshdifabio@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3",
+        "react/promise": "~1.0|~2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "ResourcePool\\": "src"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.1-dev"
+        }
+    }
+}
