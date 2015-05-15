@@ -31,7 +31,6 @@ class Pool
     /**
      * Allocates all of the pool's resources when they become available
      *
-     * @param int $resources
      * @return PromiseInterface
      */
     public function allocateAll()
