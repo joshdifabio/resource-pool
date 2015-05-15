@@ -5,6 +5,9 @@ use React\Promise\FulfilledPromise;
 use React\Promise\Deferred;
 
 /**
+ * This class exists to keep the public interface of Pool clean. Once PHP 5.3 support is dropped,
+ * this functionality will probably be moved to Pool in the form of private methods.
+ *
  * @author Josh Di Fabio <joshdifabio@gmail.com>
  *
  * @internal
