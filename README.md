@@ -51,7 +51,9 @@ foreach (getLotsOfCommands() as $command) {
 
 Install Resource Pool using [composer](https://getcomposer.org/).
 
-`composer require joshdifabio/resource-pool`
+```
+composer require joshdifabio/resource-pool
+```
 
 ## License
 
