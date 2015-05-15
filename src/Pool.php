@@ -51,7 +51,7 @@ class Pool
     /**
      * Returns the number of resources which are not currently allocated
      *
-     * @return int|null null is returned if the pool has unlimited size
+     * @return int
      */
     public function getAvailability()
     {
