@@ -1,6 +1,8 @@
 # Resource Pool
 
-[![Build Status](https://img.shields.io/travis/joshdifabio/resource-pool.svg?style=flat-square)](https://travis-ci.org/joshdifabio/resource-pool) [![Coverage](https://img.shields.io/codecov/c/github/joshdifabio/resource-pool.svg?style=flat-square)](http://codecov.io/github/joshdifabio/resource-pool) [![Code Quality](https://img.shields.io/scrutinizer/g/joshdifabio/resource-pool.svg?style=flat-square)](https://scrutinizer-ci.com/g/joshdifabio/resource-pool/)
+[![Build Status](https://img.shields.io/travis/joshdifabio/resource-pool.svg?style=flat-square)](https://travis-ci.org/joshdifabio/resource-pool)
+[![Coverage](https://img.shields.io/codecov/c/github/joshdifabio/resource-pool.svg?style=flat-square)](http://codecov.io/github/joshdifabio/resource-pool)
+[![Code Quality](https://img.shields.io/scrutinizer/g/joshdifabio/resource-pool.svg?style=flat-square)](https://scrutinizer-ci.com/g/joshdifabio/resource-pool/)
 
 ## Introduction
 
