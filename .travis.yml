@@ -10,7 +10,9 @@ php:
 
 sudo: false
 
-before_install: if [[ -n $GITHUB_TOKEN ]]; then composer config -g github-oauth.github.com $GITHUB_TOKEN; fi
+before_install:
+  - if [[ -n $GITHUB_TOKEN ]]; then composer config -g github-oauth.github.com $GITHUB_TOKEN; fi
+  - composer self-update
 
 install: composer install --no-interaction
   
