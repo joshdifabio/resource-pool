@@ -20,7 +20,7 @@ foreach (getLotsOfCommands() as $command) {
     $resultPromises[] = runProcessAsync($command);
 }
 
-\React\Promise\all($resultPromise)->then(function () {
+\React\Promise\all($resultPromises)->then(function () {
     echo "We executed all the commands at once and now they've finished!";
 });
 ```
@@ -31,6 +31,7 @@ Creating 100s or even 1000s of concurrent child processes or remote connections 
 
 ```php
 $pool = new \ResourcePool\Pool(10);
+$resultPromises = [];
 
 foreach (getLotsOfCommands() as $command) {
     $resultPromises[] = $pool->allocate(1)->then(
@@ -42,7 +43,7 @@ foreach (getLotsOfCommands() as $command) {
     );
 }
 
-\React\Promise\all($resultPromise)->then(function () {
+\React\Promise\all($resultPromises)->then(function () {
     echo "We executed all the commands with a max concurrency of 10 and now they've finished!";
 });
 ```
