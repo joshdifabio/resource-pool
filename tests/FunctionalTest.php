@@ -16,7 +16,7 @@ class PoolTest extends \PHPUnit_Framework_TestCase
 
         $firstAllocation = null;
 
-        $pool->allocate()->then(function ($allocation) use (&$firstAllocation) {
+        $pool->allocateOne()->then(function ($allocation) use (&$firstAllocation) {
             $firstAllocation = $allocation;
         });
         $this->assertNotNull($firstAllocation);
@@ -24,13 +24,13 @@ class PoolTest extends \PHPUnit_Framework_TestCase
 
         $secondAllocation = null;
 
-        $pool->allocate()->then(function ($allocation) use (&$secondAllocation) {
+        $pool->allocateOne()->then(function ($allocation) use (&$secondAllocation) {
             $secondAllocation = $allocation;
         });
         $this->assertNull($secondAllocation);
         $this->assertEquals(1, $pool->getUsage());
 
-        $thirdAllocation = $pool->allocate()->now();
+        $thirdAllocation = $pool->allocateOne()->now();
         $this->assertNull($secondAllocation);
         $this->assertEquals(2, $pool->getUsage());
 
@@ -56,7 +56,7 @@ class PoolTest extends \PHPUnit_Framework_TestCase
 
         $firstAllocation = null;
 
-        $pool->allocate()->then(function ($allocation) use (&$firstAllocation) {
+        $pool->allocateOne()->then(function ($allocation) use (&$firstAllocation) {
             $firstAllocation = $allocation;
         });
         $this->assertNotNull($firstAllocation);
@@ -64,7 +64,7 @@ class PoolTest extends \PHPUnit_Framework_TestCase
 
         $secondAllocation = null;
 
-        $pool->allocate()->then(function ($allocation) use (&$secondAllocation) {
+        $pool->allocateOne()->then(function ($allocation) use (&$secondAllocation) {
             $secondAllocation = $allocation;
         });
         $this->assertNull($secondAllocation);
@@ -91,7 +91,7 @@ class PoolTest extends \PHPUnit_Framework_TestCase
 
         $firstAllocation = null;
 
-        $pool->allocate()->then(function ($allocation) use (&$firstAllocation) {
+        $pool->allocateOne()->then(function ($allocation) use (&$firstAllocation) {
             $firstAllocation = $allocation;
         });
         $this->assertNotNull($firstAllocation);
@@ -99,7 +99,7 @@ class PoolTest extends \PHPUnit_Framework_TestCase
 
         $secondAllocation = null;
 
-        $pool->allocate()->then(function ($allocation) use (&$secondAllocation) {
+        $pool->allocateOne()->then(function ($allocation) use (&$secondAllocation) {
             $secondAllocation = $allocation;
         });
         $this->assertNotNull($secondAllocation);

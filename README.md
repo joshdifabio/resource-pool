@@ -37,7 +37,7 @@ Creating 100s or even 1000s of concurrent child processes or remote connections 
 $pool = new \ResourcePool\Pool(10);
 
 foreach (getLotsOfCommands() as $command) {
-    $pool->allocate(1)->to('runProcessAsync', $command);
+    $pool->allocateOne()->to('runProcessAsync', $command);
 }
 
 $pool->whenNextIdle(function () {

@@ -18,12 +18,22 @@ class Pool
     }
 
     /**
+     * Allocates a single resource when one becomes available
+     *
+     * @return AllocationPromise
+     */
+    public function allocateOne()
+    {
+        return $this->internal->allocate(1);
+    }
+
+    /**
      * Allocates the specified number of resources when they become available
      *
      * @param int $count
      * @return AllocationPromise
      */
-    public function allocate($count = 1)
+    public function allocate($count)
     {
         return $this->internal->allocate($count);
     }
