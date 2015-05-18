@@ -152,4 +152,31 @@ class PoolTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(0, $pool->getUsage());
         $this->assertSame('Hello!', $result);
     }
+
+    public function testWhenNextIdle()
+    {
+        $pool = new Pool(2);
+
+        $isIdle1 = false;
+        $pool->whenNextIdle(function () use (&$isIdle1) {
+            $isIdle1 = true;
+        });
+        $this->assertTrue($isIdle1);
+
+        $isIdle2 = false;
+        $pool->whenNextIdle()->then(function () use (&$isIdle2) {
+            $isIdle2 = true;
+        });
+        $this->assertTrue($isIdle2);
+
+        $deferred = new Deferred;
+        $isIdle3 = false;
+        $pool->allocate(1)->to(array($deferred, 'promise'));
+        $pool->whenNextIdle(function () use (&$isIdle3) {
+            $isIdle3 = true;
+        });
+        $this->assertFalse($isIdle3);
+        $deferred->resolve();
+        $this->assertTrue($isIdle3);
+    }
 }

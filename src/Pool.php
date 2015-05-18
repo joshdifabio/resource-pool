@@ -67,4 +67,15 @@ class Pool
     {
         return $this->internal->getUsage();
     }
+
+    /**
+     * @param callable|null $fulfilledHandler
+     * @param callable|null $errorHandler
+     * @param callable|null $progressHandler
+     * @return PromiseInterface
+     */
+    public function whenNextIdle($fulfilledHandler = null, $errorHandler = null, $progressHandler = null)
+    {
+        return $this->internal->whenNextIdle($fulfilledHandler, $errorHandler, $progressHandler);
+    }
 }
