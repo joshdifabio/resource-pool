@@ -128,9 +128,7 @@ class PoolTest extends \PHPUnit_Framework_TestCase
     {
         $pool = new Pool(2);
         $deferred = new Deferred;
-        $resultPromise = $pool->allocate(2)->to(function () use ($deferred) {
-            return $deferred->promise();
-        });
+        $resultPromise = $pool->allocate(2)->to(array($deferred, 'promise'));
         $this->assertEquals(2, $pool->getUsage());
         $deferred->resolve('Hello!');
         $this->assertEquals(0, $pool->getUsage());
@@ -145,7 +143,7 @@ class PoolTest extends \PHPUnit_Framework_TestCase
     {
         $pool = new Pool(2);
         $result = null;
-        $resultPromise = $pool->allocate(2)->to(function () use (&$result) {
+        $resultPromise = $pool->allocate(2)->to(function () {
             return 'Hello!';
         });
         $resultPromise->then(function ($_result) use (&$result) {
