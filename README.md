@@ -13,6 +13,8 @@ Resource pools allow you to regulate the concurrency level of your asynchronous 
 Consider an application which executes commands concurrently using child processes.
 
 ```php
+// Bad: execute all the commands at once
+
 $resultPromises = [];
 
 foreach (getLotsOfCommands() as $command) {
@@ -30,14 +32,15 @@ This is a simple example of a common scenario in async PHP applications: unregul
 Creating 100s or even 1000s of concurrent child processes or remote connections is a potential problem. This is where resource pools come in handy.
 
 ```php
+// Good: execute the commands with a concurrency of 10
+
 $pool = new \ResourcePool\Pool(10);
-$resultPromises = [];
 
 foreach (getLotsOfCommands() as $command) {
-    $resultPromises[] = $pool->allocate(1)->to('runProcessAsync', $command);
+    $pool->allocate(1)->to('runProcessAsync', $command);
 }
 
-\React\Promise\all($resultPromises)->then(function () {
+$pool->whenNextIdle(function () {
     echo "We executed all the commands with a max concurrency of 10 and now they've finished!";
 });
 ```
