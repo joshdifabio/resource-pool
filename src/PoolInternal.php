@@ -17,15 +17,22 @@ class PoolInternal
     private $size;
     private $usage = 0;
     private $queue;
+    private $whenNextIdle;
 
     public function __construct($size = null)
     {
         $this->size = $size;
         $this->queue = new \SplQueue;
+        $this->whenNextIdle = new Deferred;
+        $this->whenNextIdle->resolve();
     }
 
     public function allocate($count)
     {
+        if ($this->isIdle()) {
+            $this->whenNextIdle = new Deferred;
+        }
+
         if ($this->canAllocate($count)) {
             $allocation = $this->createAllocation($count);
             $promise = new FulfilledPromise($allocation);
@@ -48,6 +55,10 @@ class PoolInternal
 
     public function allocateAll()
     {
+        if ($this->isIdle()) {
+            $this->whenNextIdle = new Deferred;
+        }
+
         $count = null;
 
         if ($this->canAllocate($count)) {
@@ -84,7 +95,7 @@ class PoolInternal
                 $this->queue->dequeue();
                 continue;
             }
-            
+
             if (!$this->canAllocate($allocationInfo[0])) {
                 break;
             }
@@ -99,6 +110,9 @@ class PoolInternal
     {
         $this->usage -= $amount;
         $this->processQueue();
+        if ($this->isIdle()) {
+            $this->whenNextIdle->resolve();
+        }
     }
 
     private function canAllocate($count = null)
@@ -119,5 +133,21 @@ class PoolInternal
         $this->usage += $size;
 
         return new Allocation(array($this, 'decrementUsage'), $size);
+    }
+
+    public function whenNextIdle($fulfilledHandler = null)
+    {
+        $promise = $this->whenNextIdle->promise();
+
+        if (null !== $fulfilledHandler) {
+            return $promise->then($fulfilledHandler);
+        }
+
+        return $promise;
+    }
+
+    private function isIdle()
+    {
+        return (0 == $this->usage && 0 == $this->queue->count());
     }
 }
