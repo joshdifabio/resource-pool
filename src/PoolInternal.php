@@ -24,7 +24,7 @@ class PoolInternal
         $this->queue = new \SplQueue;
     }
 
-    public function whenAllocated($count)
+    public function allocate($count)
     {
         if ($this->canAllocate($count)) {
             $allocation = $this->createAllocation($count);
@@ -46,7 +46,7 @@ class PoolInternal
         return new AllocationPromise($promise, $resolver);
     }
 
-    public function whenAllAllocated()
+    public function allocateAll()
     {
         $count = null;
 

@@ -25,7 +25,7 @@ class Pool
      */
     public function allocate($count = 1)
     {
-        return $this->internal->whenAllocated($count);
+        return $this->internal->allocate($count);
     }
 
     /**
@@ -35,7 +35,7 @@ class Pool
      */
     public function allocateAll()
     {
-        return $this->internal->whenAllAllocated();
+        return $this->internal->allocateAll();
     }
 
     /**
