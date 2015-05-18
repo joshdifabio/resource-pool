@@ -1,6 +1,8 @@
 <?php
 namespace ResourcePool;
 
+use React\Promise\Deferred;
+
 /**
  * @author Josh Di Fabio <joshdifabio@gmail.com>
  */
@@ -120,5 +122,36 @@ class PoolTest extends \PHPUnit_Framework_TestCase
         $secondAllocation->releaseAll();
         $this->assertNotNull($fullAllocation);
         $this->assertEquals(3, $pool->getUsage());
+    }
+
+    public function testAllocateTo()
+    {
+        $pool = new Pool(2);
+        $deferred = new Deferred;
+        $resultPromise = $pool->allocate(2)->to(function () use ($deferred) {
+            return $deferred->promise();
+        });
+        $this->assertEquals(2, $pool->getUsage());
+        $deferred->resolve('Hello!');
+        $this->assertEquals(0, $pool->getUsage());
+        $result = null;
+        $resultPromise->then(function ($_result) use (&$result) {
+            $result = $_result;
+        });
+        $this->assertSame('Hello!', $result);
+    }
+
+    public function testAllocateToSyncCallback()
+    {
+        $pool = new Pool(2);
+        $result = null;
+        $resultPromise = $pool->allocate(2)->to(function () use (&$result) {
+            return 'Hello!';
+        });
+        $resultPromise->then(function ($_result) use (&$result) {
+            $result = $_result;
+        });
+        $this->assertEquals(0, $pool->getUsage());
+        $this->assertSame('Hello!', $result);
     }
 }
