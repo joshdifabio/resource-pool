@@ -29,10 +29,8 @@ class PoolInternal
 
     public function allocate($count)
     {
-        if ($this->isIdle()) {
-            $this->whenNextIdle = new Deferred;
-        }
-
+        $this->beforeAllocate();
+        
         if ($this->canAllocate($count)) {
             $allocation = $this->createAllocation($count);
             $promise = new FulfilledPromise($allocation);
@@ -55,10 +53,7 @@ class PoolInternal
 
     public function allocateAll()
     {
-        if ($this->isIdle()) {
-            $this->whenNextIdle = new Deferred;
-        }
-
+        $this->beforeAllocate();
         $count = null;
 
         if ($this->canAllocate($count)) {
@@ -144,6 +139,13 @@ class PoolInternal
         }
 
         return $promise;
+    }
+
+    private function beforeAllocate()
+    {
+        if ($this->isIdle()) {
+            $this->whenNextIdle = new Deferred;
+        }
     }
 
     private function isIdle()
