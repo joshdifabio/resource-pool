@@ -152,4 +152,27 @@ class PoolTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(0, $pool->getUsage());
         $this->assertSame('Hello!', $result);
     }
+
+    public function testAllocateToWithParam()
+    {
+        $pool = new Pool(1);
+        $deferred = new Deferred;
+        $resultPromise = $pool->allocate(1)->to(array($deferred, 'resolve'), 'Hello, world!');
+        $result = null;
+        $resultPromise->then(function ($_result) use (&$result) {
+            $result = $_result;
+        });
+        $this->assertSame('Hello, world!', $result);
+    }
+
+    public function testAllocateToWithParams()
+    {
+        $pool = new Pool(1);
+        $resultPromise = $pool->allocate(1)->to('implode', ',', array('Hello', ' world!'));
+        $result = null;
+        $resultPromise->then(function ($_result) use (&$result) {
+            $result = $_result;
+        });
+        $this->assertSame('Hello, world!', $result);
+    }
 }
