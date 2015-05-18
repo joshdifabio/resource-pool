@@ -34,11 +34,10 @@ $pool = new \ResourcePool\Pool(10);
 $resultPromises = [];
 
 foreach (getLotsOfCommands() as $command) {
-    $resultPromises[] = $pool->allocate(1)->then(
-        function ($allocation) use ($command) {
-            $resultPromise = runProcessAsync($command);
-            $resultPromise->then([$allocation, 'releaseAll']);
-            return $resultPromise;
+    $resultPromises[] = $pool->allocate(1)->to(
+        function () use ($command) {
+            // start a new process asynchronously
+            return runProcessAsync($command);
         }
     );
 }
