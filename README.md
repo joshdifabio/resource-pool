@@ -34,12 +34,7 @@ $pool = new \ResourcePool\Pool(10);
 $resultPromises = [];
 
 foreach (getLotsOfCommands() as $command) {
-    $resultPromises[] = $pool->allocate(1)->to(
-        function () use ($command) {
-            // start a new process asynchronously
-            return runProcessAsync($command);
-        }
-    );
+    $resultPromises[] = $pool->allocate(1)->to('runProcessAsync', $command);
 }
 
 \React\Promise\all($resultPromises)->then(function () {
