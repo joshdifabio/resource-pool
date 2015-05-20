@@ -12,9 +12,9 @@ use React\Promise\RejectedPromise;
  */
 class AllocationPromise implements PromiseInterface
 {
-    protected $promise;
-    protected $resolver;
-    protected $result;
+    private $promise;
+    private $resolver;
+    private $result;
 
     public function __construct(PromiseInterface $promise, $resolver = null)
     {
