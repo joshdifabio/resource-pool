@@ -12,7 +12,7 @@ Resource pools allow you to regulate the concurrency level of your asynchronous 
 
 ## Basic usage
 
-Consider an application which sends requests to a remote HTTP endpoint.
+Consider an application which sends HTTP requests to a remote endpoint.
 
 ### How you shouldn't do it
 
@@ -24,7 +24,7 @@ foreach (getLotsOfRequests() as $request) {
 }
 ```
 
-An implementation like this could easily send 100s or even 1000s of requests within a single second, causing huge load on the remote server as it tries to serve your requests. This is essentially a DOS attack, and will cause people to hate you.
+An implementation like this could easily send 100s or even 1000s of requests within a single second, causing huge load on the remote server as it tries to serve your requests. This is essentially a DOS attack, and will make sysadmins cry, who will then make you cry.
 
 ### How you should do it
 
