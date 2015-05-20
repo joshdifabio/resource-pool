@@ -24,7 +24,7 @@ foreach (getLotsOfCommands() as $command) {
 }
 ```
 
-An implementation like this could easily spawn 100s or even 1000s of child processes concurrently. Poor server.
+An implementation like this could easily spawn 100s or even 1000s of child processes concurrently. This will cause your sysadmin to remove you from his Christmas card list.
 
 ### How it should be done
 
@@ -44,11 +44,11 @@ foreach (getLotsOfCommands() as $command) {
 }
 ```
 
-That's it! Now your sysadmins will stop bugging you about your code smashing their servers!
+That's it! You can look your sysadmin in the eye again!
 
 ## Advanced usage
 
-Okay, so you're advanced. You should read this.
+Advanced, eh? You should read this.
 
 ### Allocate multiple resources
 
@@ -87,6 +87,32 @@ $allocation = $pool->allocate(2)->orBurst();
 ```php
 // throws \RuntimeException if the pool cannot allocate two resources
 $allocation = $pool->allocate(2)->orFail();
+```
+
+### Find out when a pool is idle
+
+```php
+$pool->whenNextIdle(function () {
+    // the pool is idle!
+})
+```
+
+### Change the size of a pool
+
+```php
+$pool->setSize(100);
+```
+
+### Find out how many resources are allocated
+
+```php
+$pool->getUsage();
+```
+
+### Find out how many resources are available
+
+```php
+$pool->getAvailability();
 ```
 
 ## Installation
