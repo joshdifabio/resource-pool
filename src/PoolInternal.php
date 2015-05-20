@@ -50,6 +50,7 @@ class PoolInternal
             $promise = $deferred->promise();
             $isResolved = false;
             $resolver = $this->createResolver($isResolved, $count, $deferred);
+            $promise->then(null, array($this, 'afterPromiseCancelled'));
             $this->queue->enqueue(array($count, $deferred, &$isResolved));
         }
 
@@ -88,6 +89,11 @@ class PoolInternal
             $allocation = $this->createAllocation($allocationInfo[0]);
             $allocationInfo[1]->resolve($allocation);
         }
+    }
+    
+    public function afterPromiseCancelled()
+    {
+        $this->decrementUsage(0);
     }
 
     public function decrementUsage($amount)

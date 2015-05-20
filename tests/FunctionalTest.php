@@ -202,4 +202,39 @@ class PoolTest extends \PHPUnit_Framework_TestCase
         $deferred->resolve();
         $this->assertTrue($isIdle3);
     }
+
+    public function testAllocationFailureCleanup()
+    {
+        $pool = new Pool(0);
+
+        $allocationPromise = $pool->allocateOne();
+
+        $isIdle1 = false;
+        $pool->whenNextIdle(function () use (&$isIdle1) {
+            $isIdle1 = true;
+        });
+        $this->assertFalse($isIdle1);
+
+        $e1 = null;
+        try {
+            $allocationPromise->orFail();
+        } catch (\Exception $e1) {
+            
+        }
+        $this->assertNotNull($e1);
+
+        $e2 = null;
+        try {
+            $allocationPromise->orBurst();
+        } catch (\Exception $e2) {
+            
+        }
+        $this->assertNotNull($e2);
+
+        $isIdle2 = false;
+        $pool->whenNextIdle(function () use (&$isIdle2) {
+            $isIdle2 = true;
+        });
+        $this->assertTrue($isIdle2);
+    }
 }
