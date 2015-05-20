@@ -30,7 +30,7 @@ class PoolTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($secondAllocation);
         $this->assertEquals(1, $pool->getUsage());
 
-        $thirdAllocation = $pool->allocateOne()->now();
+        $thirdAllocation = $pool->allocateOne()->orBurst();
         $this->assertNull($secondAllocation);
         $this->assertEquals(2, $pool->getUsage());
 

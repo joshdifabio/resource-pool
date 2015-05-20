@@ -29,6 +29,16 @@ class PoolInternal
 
     public function allocate($count)
     {
+        return $this->createAllocationPromise('ResourcePool\PartialAllocationPromise', $count);
+    }
+
+    public function allocateAll()
+    {
+        return $this->createAllocationPromise('ResourcePool\AllocationPromise');
+    }
+
+    private function createAllocationPromise($promiseClass, $count = null)
+    {
         $this->beforeAllocate();
         
         if ($this->canAllocate($count)) {
@@ -38,35 +48,14 @@ class PoolInternal
         } else {
             $deferred = new Deferred;
             $promise = $deferred->promise();
-            $that = $this;
             $isResolved = false;
-            $resolver = function () use (&$isResolved, $that, $count, $deferred) {
-                $isResolved = true;
-                $allocation = $that->createAllocation($count);
-                $deferred->resolve($allocation);
-            };
+            $resolver = $this->createResolver($isResolved, $count, $deferred);
             $this->queue->enqueue(array($count, $deferred, &$isResolved));
         }
 
-        return new AllocationPromise($promise, $resolver);
+        return new $promiseClass($promise, $resolver);
     }
-
-    public function allocateAll()
-    {
-        $this->beforeAllocate();
-        $count = null;
-
-        if ($this->canAllocate($count)) {
-            $allocation = $this->createAllocation($count);
-            return new FulfilledPromise($allocation);
-        }
-
-        $deferred = new Deferred;
-        $this->queue->enqueue(array($count, $deferred, false));
-
-        return $deferred->promise();
-    }
-
+    
     public function setSize($size)
     {
         $this->size = $size;
@@ -110,7 +99,7 @@ class PoolInternal
         }
     }
 
-    private function canAllocate($count = null)
+    public function canAllocate($count = null)
     {
         if (null === $count) {
             return 0 === $this->usage && $this->size > 0;
@@ -151,5 +140,25 @@ class PoolInternal
     private function isIdle()
     {
         return (0 == $this->usage && 0 == $this->queue->count());
+    }
+    
+    private function createResolver(&$isResolved, $count, $deferred)
+    {
+        $that = $this;
+        
+        return function ($burst) use (&$isResolved, $that, $count, $deferred) {
+            if ($isResolved) {
+                throw new \LogicException;
+            }
+
+            $isResolved = true;
+            
+            if ($burst || $that->canAllocate($count)) {
+                $allocation = $that->createAllocation($count);
+                $deferred->resolve($allocation);
+            } else {
+                $deferred->reject(new \RuntimeException('The resource pool cannot allocate the specified number of resources'));
+            }
+        };
     }
 }
