@@ -18,7 +18,7 @@ class Allocation
     }
 
     /**
-     * Releases one of the resources which are still part of this allocation
+     * Releases a single resource from this allocation
      */
     public function releaseOne()
     {
@@ -26,7 +26,7 @@ class Allocation
     }
 
     /**
-     * Releases any resources which are still part of this allocation
+     * Releases all resources from this allocation
      */
     public function releaseAll()
     {
@@ -36,9 +36,9 @@ class Allocation
     }
 
     /**
-     * Releases a specified number of the resources which are still part of this allocation
+     * Releases the specified number of resources from this allocation
      *
-     * @param int $count the number of resources to release
+     * @param int $count
      */
     public function release($count)
     {
