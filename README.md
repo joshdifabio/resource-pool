@@ -12,39 +12,39 @@ Resource pools allow you to regulate the concurrency level of your asynchronous 
 
 ## Basic usage
 
-Consider an application which executes commands concurrently using child processes.
+Consider an application which sends requests to a remote HTTP endpoint.
 
-### How it's sometimes done
+### How you shouldn't do it
 
 ```php
-foreach (getLotsOfCommands() as $command) {
-    runChildProcess($command)->then(function ($output) {
-        // the process finished!
+foreach (getLotsOfRequests() as $request) {
+    sendRequest($request)->then(function ($response) {
+        // the response came back!
     });
 }
 ```
 
-An implementation like this could easily spawn 100s or even 1000s of child processes concurrently. This will cause your sysadmin to remove you from his Christmas card list.
+An implementation like this could easily send 100s or even 1000s of requests within a single second, causing huge load on the remote server as it tries to serve your requests. This is essentially a DOS attack, and will cause people to hate you.
 
-### How it should be done
+### How you should do it
 
-Create a resource pool with a fixed number of resources, for example five.
+Create a resource pool with a fixed number of virtual resources, for example five.
 
 ```php
 $pool = new \ResourcePool\Pool(5);
 ```
 
-Before starting a process, allocate a resource from the pool. `Pool::allocateOne()` returns a promise which resolves as soon as a resource becomes available.
+Before sending a request, allocate a resource from the pool. `Pool::allocateOne()` returns a promise which resolves as soon as a resource becomes available.
 
 ```php
-foreach (getLotsOfCommands() as $command) {
-    $pool->allocateOne()->to('runChildProcess', $command)->then(function ($output) {
-        // the process finished!
+foreach (getLotsOfRequests() as $request) {
+    $pool->allocateOne()->to('sendRequest', $request)->then(function ($response) {
+        // the response came back!
     });
 }
 ```
 
-That's it! You can look your sysadmin in the eye again!
+That's it! You did it! The above implementation will only spawn a maximum of five requests concurrently.
 
 ## Advanced usage
 
@@ -85,7 +85,7 @@ $allocation = $pool->allocate(2)->orBurst();
 ```
 
 ```php
-// throws \RuntimeException if the pool cannot allocate two resources
+// throws a \RuntimeException if the pool cannot allocate two resources
 $allocation = $pool->allocate(2)->orFail();
 ```
 
@@ -94,7 +94,7 @@ $allocation = $pool->allocate(2)->orFail();
 ```php
 $pool->whenNextIdle(function () {
     // the pool is idle!
-})
+});
 ```
 
 ### Change the size of a pool
