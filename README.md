@@ -8,20 +8,22 @@ Don't pwn your resources, pool them!
 
 ## Introduction
 
-Resource pools allow you to regulate the concurrency level of your asynchronous PHP components and spare your CPU, Internet connection and other resources from excessive load.
+Using resource pools will make your sysadmins like you more. They will do this be regulating the concurrency level of your asynchronous PHP components and sparing your servers from excessive load. They're particularly useful if you send HTTP requests or spawn child processes asynchronously.
 
 ## Basic usage
 
-Consider an application which sends HTTP requests to a remote endpoint.
+Consider an application which sends HTTP requests to a remote endpoint asynchronously.
 
 ### How you shouldn't do it
 
 ```php
-foreach (getLotsOfRequests() as $request) {
+foreach (getThousandsOfRequests() as $request) {
     sendRequest($request)->then(function ($response) {
         // the response came back!
     });
 }
+
+// thousands of requests have been initiated concurrently
 ```
 
 An implementation like this could easily send 100s or even 1000s of requests within a single second, causing huge load on the remote server as it tries to serve your requests. This is essentially a DOS attack, and will make sysadmins cry, who will then make you cry.
@@ -34,21 +36,24 @@ Create a resource pool representing a fixed number of resources, for example fiv
 $pool = new \ResourcePool\Pool(5);
 ```
 
-Before sending a request, allocate a resource from the pool. `Pool::allocateOne()` returns a promise which resolves as soon as a resource becomes available.
+Before sending a request, allocate a resource from the pool. `Pool::allocateOne()` returns an `AllocationPromise` which resolves as soon as a resource becomes available.
 
 ```php
-foreach (getLotsOfRequests() as $request) {
+foreach (getThousandsOfRequests() as $request) {
+    // to() will invoke a function and then release the allocated resources once it's done
     $pool->allocateOne()->to('sendRequest', $request)->then(function ($response) {
         // the response came back!
     });
 }
+
+// five requests are running; the rest are queued and will be sent as others complete
 ```
 
-That's it! You did it! The above implementation will only spawn a maximum of five requests concurrently.
+That's it! You did it! This implementation will spawn a maximum of five concurrent requests.
 
 ## Advanced usage
 
-Advanced, eh? You should read this.
+Advanced user? Read on.
 
 ### Allocate multiple resources
 
@@ -80,13 +85,22 @@ $pool->allocate(2)->then(function ($allocation) {
 ### Force an allocation to resolve immediately
 
 ```php
-// throws a \RuntimeException if the pool cannot allocate two resources
-$allocation = $pool->allocate(2)->now();
+try {
+    $allocation = $pool->allocate(2)->now();
+} catch (\RuntimeException $e) {
+    // throws a \RuntimeException if the pool cannot allocate two resources
+}
 ```
 
+You can also choose to burst beyond the size of the pool for a specific allocation.
+
 ```php
-// returns an allocation of two resources, even if the pool is already fully utilised
+$pool = new \ResourcePool\Pool(1);
 $allocation = $pool->allocate(2)->force();
+$pool->getUsage(); // 2
+$pool->getAvailability(); // 0
+$allocation->releaseAll();
+$pool->getAvailability(); // 1
 ```
 
 ### Find out when a pool is idle
