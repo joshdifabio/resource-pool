@@ -30,7 +30,7 @@ class PoolTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($secondAllocation);
         $this->assertEquals(1, $pool->getUsage());
 
-        $thirdAllocation = $pool->allocateOne()->now();
+        $thirdAllocation = $pool->allocateOne()->force();
         $this->assertNull($secondAllocation);
         $this->assertEquals(2, $pool->getUsage());
 
@@ -201,5 +201,40 @@ class PoolTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($isIdle3);
         $deferred->resolve();
         $this->assertTrue($isIdle3);
+    }
+
+    public function testAllocationFailureCleanup()
+    {
+        $pool = new Pool(0);
+
+        $allocationPromise = $pool->allocateOne();
+
+        $isIdle1 = false;
+        $pool->whenNextIdle(function () use (&$isIdle1) {
+            $isIdle1 = true;
+        });
+        $this->assertFalse($isIdle1);
+
+        $e1 = null;
+        try {
+            $allocationPromise->now();
+        } catch (\Exception $e1) {
+            
+        }
+        $this->assertNotNull($e1);
+
+        $e2 = null;
+        try {
+            $allocationPromise->force();
+        } catch (\Exception $e2) {
+            
+        }
+        $this->assertNotNull($e2);
+
+        $isIdle2 = false;
+        $pool->whenNextIdle(function () use (&$isIdle2) {
+            $isIdle2 = true;
+        });
+        $this->assertTrue($isIdle2);
     }
 }

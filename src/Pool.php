@@ -20,7 +20,7 @@ class Pool
     /**
      * Allocates a single resource when one becomes available
      *
-     * @return AllocationPromise
+     * @return PartialAllocationPromise
      */
     public function allocateOne()
     {
@@ -31,7 +31,7 @@ class Pool
      * Allocates the specified number of resources when they become available
      *
      * @param int $count
-     * @return AllocationPromise
+     * @return PartialAllocationPromise
      */
     public function allocate($count)
     {
@@ -41,7 +41,7 @@ class Pool
     /**
      * Allocates all of the pool's resources when they become available
      *
-     * @return PromiseInterface
+     * @return AllocationPromise
      */
     public function allocateAll()
     {
