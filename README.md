@@ -28,7 +28,7 @@ An implementation like this could easily send 100s or even 1000s of requests wit
 
 ### How you should do it
 
-Create a resource pool with a fixed number of virtual resources, for example five.
+Create a resource pool representing a fixed number of resources, for example five.
 
 ```php
 $pool = new \ResourcePool\Pool(5);
