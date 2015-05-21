@@ -34,7 +34,7 @@ foreach (getThousandsOfRequests() as $request) {
 // thousands of requests have been initiated concurrently
 ```
 
-An implementation like this could easily send 100s or even 1000s of requests within a single second, causing huge load on the remote server as it tries to serve your requests. This is essentially a DOS attack, and will make sysadmins cry, who will then make you cry.
+An implementation like this could easily send 100s or even 1000s of requests within a single second, causing huge load on the remote server as it tries to serve your requests. This is essentially a DoS attack, and will make sysadmins cry, who will then make you cry.
 
 ### How you should do it
 
