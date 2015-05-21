@@ -12,9 +12,15 @@ Resource pools allow you to regulate the concurrency level of your asynchronous 
 
 ## Basic usage
 
-If you aren't familiar with [promises](https://github.com/reactphp/promise), this section isn't going to make a lot of sense.
+If you aren't familiar with [Promises](https://github.com/reactphp/promise), this section isn't going to make a lot of sense.
 
 Consider an application which sends HTTP requests to a remote endpoint asynchronously.
+
+```php
+function sendRequest() {
+    // this would probably be something like Guzzle or React/HttpClient
+}
+```
 
 ### How you shouldn't do it
 
