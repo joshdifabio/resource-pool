@@ -80,13 +80,13 @@ $pool->allocate(2)->then(function ($allocation) {
 ### Force an allocation to resolve immediately
 
 ```php
-// returns an allocation of two resources, even if the pool is fully allocated
-$allocation = $pool->allocate(2)->orBurst();
+// throws a \RuntimeException if the pool cannot allocate two resources
+$allocation = $pool->allocate(2)->now();
 ```
 
 ```php
-// throws a \RuntimeException if the pool cannot allocate two resources
-$allocation = $pool->allocate(2)->orFail();
+// returns an allocation of two resources, even if the pool is already fully utilised
+$allocation = $pool->allocate(2)->force();
 ```
 
 ### Find out when a pool is idle
