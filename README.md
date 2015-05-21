@@ -17,7 +17,7 @@ If you aren't familiar with [Promises](https://github.com/reactphp/promise), thi
 Consider an application which sends HTTP requests to a remote endpoint asynchronously.
 
 ```php
-function sendRequest($httpRequest) {
+function sendRequest($httpRequest) : PromiseInterface {
     // this would probably be something like Guzzle or React/HttpClient
 }
 ```
