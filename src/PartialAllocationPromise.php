@@ -17,7 +17,7 @@ class PartialAllocationPromise extends AllocationPromise
      * @return Allocation
      * @throws \RuntimeException thrown if the allocation has previously failed
      */
-    public function orBurst()
+    public function force()
     {
         return $this->getResult(true);
     }

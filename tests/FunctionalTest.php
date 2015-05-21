@@ -30,7 +30,7 @@ class PoolTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($secondAllocation);
         $this->assertEquals(1, $pool->getUsage());
 
-        $thirdAllocation = $pool->allocateOne()->orBurst();
+        $thirdAllocation = $pool->allocateOne()->force();
         $this->assertNull($secondAllocation);
         $this->assertEquals(2, $pool->getUsage());
 
@@ -217,7 +217,7 @@ class PoolTest extends \PHPUnit_Framework_TestCase
 
         $e1 = null;
         try {
-            $allocationPromise->orFail();
+            $allocationPromise->now();
         } catch (\Exception $e1) {
             
         }
@@ -225,7 +225,7 @@ class PoolTest extends \PHPUnit_Framework_TestCase
 
         $e2 = null;
         try {
-            $allocationPromise->orBurst();
+            $allocationPromise->force();
         } catch (\Exception $e2) {
             
         }

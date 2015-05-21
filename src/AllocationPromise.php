@@ -66,7 +66,7 @@ class AllocationPromise implements PromiseInterface
      * @return Allocation
      * @throws \RuntimeException thrown if the allocation fails or has previously failed
      */
-    public function orFail()
+    public function now()
     {
         return $this->getResult(false);
     }
