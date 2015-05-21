@@ -8,9 +8,11 @@ Don't pwn your resources, pool them!
 
 ## Introduction
 
-Using resource pools will make your sysadmins like you more. They will do this be regulating the concurrency level of your asynchronous PHP components and sparing your servers from excessive load. They're particularly useful if you send HTTP requests or spawn child processes asynchronously.
+Resource pools allow you to regulate the concurrency level of your asynchronous PHP components and spare your servers from excessive load. You'll find them particularly useful if your application sends HTTP requests or spawns child processes. Using them will cause the Internet to like you more.
 
 ## Basic usage
+
+If you aren't familiar with [promises](https://github.com/reactphp/promise), this section isn't going to make a lot of sense.
 
 Consider an application which sends HTTP requests to a remote endpoint asynchronously.
 
