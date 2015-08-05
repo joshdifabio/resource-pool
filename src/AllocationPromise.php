@@ -45,7 +45,10 @@ class AllocationPromise implements PromiseInterface
         return $this->then(
             function (Allocation $allocation) use ($handler, $args) {
                 try {
-                    $result = Util::promiseFor(call_user_func_array($handler, $args));
+                    $result = call_user_func_array($handler, $args);
+                    if (!method_exists($result, 'then')) {
+                        $result = Util::promiseFor($result);
+                    }
                     $result->then(array($allocation, 'releaseAll'), array($allocation, 'releaseAll'));
                 } catch (\Exception $e) {
                     $result = new RejectedPromise($e);
