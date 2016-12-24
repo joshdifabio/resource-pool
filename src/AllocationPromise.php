@@ -25,7 +25,7 @@ class AllocationPromise implements PromiseInterface
     /**
      * {@inheritdoc}
      */
-    public function then($fulfilledHandler = null, $errorHandler = null, $progressHandler = null)
+    public function then(callable $fulfilledHandler = null, callable $errorHandler = null, callable $progressHandler = null)
     {
         return $this->promise->then($fulfilledHandler, $errorHandler, $progressHandler);
     }
