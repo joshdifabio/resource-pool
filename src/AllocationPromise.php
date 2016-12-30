@@ -2,7 +2,6 @@
 namespace ResourcePool;
 
 use React\Promise\PromiseInterface;
-use React\Promise\Util;
 use React\Promise\RejectedPromise;
 
 /**
@@ -25,7 +24,7 @@ class AllocationPromise implements PromiseInterface
     /**
      * {@inheritdoc}
      */
-    public function then($fulfilledHandler = null, $errorHandler = null, $progressHandler = null)
+    public function then(callable $fulfilledHandler = null, callable $errorHandler = null, callable $progressHandler = null)
     {
         return $this->promise->then($fulfilledHandler, $errorHandler, $progressHandler);
     }
@@ -46,9 +45,7 @@ class AllocationPromise implements PromiseInterface
             function (Allocation $allocation) use ($handler, $args) {
                 try {
                     $result = call_user_func_array($handler, $args);
-                    if (!method_exists($result, 'then')) {
-                        $result = Util::promiseFor($result);
-                    }
+                    $result = \React\Promise\resolve($result);
                     $result->then(array($allocation, 'releaseAll'), array($allocation, 'releaseAll'));
                 } catch (\Exception $e) {
                     $result = new RejectedPromise($e);

@@ -156,13 +156,12 @@ class PoolTest extends \PHPUnit_Framework_TestCase
     public function testAllocateToWithParam()
     {
         $pool = new Pool(1);
-        $deferred = new Deferred;
-        $resultPromise = $pool->allocate(1)->to(array($deferred, 'resolve'), 'Hello, world!');
+        $resultPromise = $pool->allocate(1)->to('strtolower', 'Hello, world!');
         $result = null;
         $resultPromise->then(function ($_result) use (&$result) {
             $result = $_result;
         });
-        $this->assertSame('Hello, world!', $result);
+        $this->assertSame('hello, world!', $result);
     }
 
     public function testAllocateToWithParams()
